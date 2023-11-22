@@ -11,11 +11,7 @@ import { Participant } from "../../components/Participant";
 import { useState } from "react";
 
 export default function Home() {
-  const [getParticipants, setParticipants] = useState<string[]>([
-    "Genival",
-    "Thaisa",
-    "Neto",
-  ]);
+  const [getParticipants, setParticipants] = useState<string[]>([]);
   const [getParticipantsName, setParticipantsName] = useState("");
 
   function handleParticipantAdd() {
