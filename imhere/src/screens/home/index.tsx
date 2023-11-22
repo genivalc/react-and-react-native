@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Text,
   TextInput,
@@ -8,41 +9,63 @@ import {
 } from "react-native";
 import { styles } from "./styles";
 import { Participant } from "../../components/Participant";
-import { useState } from "react";
 
 export default function Home() {
-  const [getParticipants, setParticipants] = useState<string[]>([]);
-  const [getParticipantsName, setParticipantsName] = useState("");
+  const [participants, setParticipants] = useState<string[]>([]);
+  const [participantName, setParticipantName] = useState("");
 
-  function handleParticipantAdd() {
-    if (getParticipants.includes(getParticipantsName)) {
+  const MIN_NAME_LENGTH = 3;
+
+  const ALERT_MESSAGES = {
+    participantExists: {
+      title: "Participante Existe",
+      message: "Já existe um participante na lista com esse nome",
+    },
+    invalidNameLength: {
+      title: "Participante não pode ser adicionado",
+      message: `O nome deve ter pelo menos ${MIN_NAME_LENGTH} caracteres para ser salvo`,
+    },
+  };
+
+  const handleParticipantAdd = () => {
+    if (participants.includes(participantName)) {
       return Alert.alert(
-        "Participante Existe",
-        "Ja existe um participante na lista com esse nome"
+        ALERT_MESSAGES.participantExists.title,
+        ALERT_MESSAGES.participantExists.message
       );
     }
 
-    setParticipants((prevState) => [...prevState, getParticipantsName]);
-    setParticipantsName("");
-  }
+    if (participantName.length < MIN_NAME_LENGTH) {
+      return Alert.alert(
+        ALERT_MESSAGES.invalidNameLength.title,
+        ALERT_MESSAGES.invalidNameLength.message
+      );
+    }
 
-  function handleParticipantRemove(name: string) {
+    setParticipants((prevParticipants) => [
+      ...prevParticipants,
+      participantName,
+    ]);
+    setParticipantName("");
+  };
+
+  const handleParticipantRemove = (name: string) => {
     Alert.alert("Remover", `Remover o participante ${name}?`, [
       {
         text: "Sim",
         onPress: () => {
-          setParticipants((prevState) =>
-            prevState.filter((participant) => participant !== name)
+          setParticipants((prevParticipants) =>
+            prevParticipants.filter((participant) => participant !== name)
           );
           Alert.alert("Deletado!");
         },
       },
       {
-        text: "Nao",
+        text: "Não",
         style: "cancel",
       },
     ]);
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -54,19 +77,19 @@ export default function Home() {
           style={styles.input}
           placeholder="Nome do participante"
           placeholderTextColor="#6b6b6b"
-          onChangeText={(text) => setParticipantsName(text)}
-          value={getParticipantsName}
+          onChangeText={setParticipantName}
+          value={participantName}
         />
         <TouchableOpacity style={styles.button} onPress={handleParticipantAdd}>
           <Text style={styles.buttonText}>+</Text>
         </TouchableOpacity>
       </View>
+
       <FlatList
-        data={getParticipants}
+        data={participants}
         keyExtractor={(item) => item}
         renderItem={({ item }) => (
           <Participant
-            key={item}
             name={item}
             onRemove={() => handleParticipantRemove(item)}
           />
@@ -74,8 +97,8 @@ export default function Home() {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={() => (
           <Text style={styles.listEmptyText}>
-            Ninguem chegou no evento ainda? Adicione participantes a sua lista
-            de presenca. de presenca.
+            Ninguém chegou no evento ainda? Adicione participantes à sua lista
+            de presença.
           </Text>
         )}
       />
