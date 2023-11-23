@@ -5,6 +5,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     overflow: "hidden",
+    fontFamily: "Inter",
   },
   topHalf: {
     flex: 1,
@@ -15,7 +16,7 @@ export const styles = StyleSheet.create({
   },
   bottomHalf: {
     flex: 4,
-    backgroundColor: "#333333",
+    backgroundColor: "#1A1A1A",
     justifyContent: "center",
     alignItems: "center",
     padding: 24,
@@ -24,5 +25,24 @@ export const styles = StyleSheet.create({
     resizeMode: "contain",
     width: 110,
     height: 32,
+  },
+  flastList: {
+    width: "100%",
+  },
+  listEmptyText: {
+    color: "#808080",
+    fontSize: 14,
+    margin: 20,
+  },
+  clipboard: {
+    width: 56,
+    height: 56,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  empty: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
