@@ -5,3 +5,5 @@ ex: npx expo install expo-font @expo-google-fonts/inter
 
 icons  https://phosphoricons.com/
 https://docs.expo.dev/ui-programming/using-svgs/#including-the-svg-in-our-project
+
+
