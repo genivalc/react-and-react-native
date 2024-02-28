@@ -1,1 +1,11 @@
 npx create-expo-app --template expo-template-blank-typescript
+
+fonts: https://docs.expo.dev/develop/user-interface/fonts/
+ex: npx expo install expo-font @expo-google-fonts/inter
+
+icons  https://phosphoricons.com/
+https://docs.expo.dev/ui-programming/using-svgs/#including-the-svg-in-our-project
+
+theme https://docs.nativebase.io/install-expo
+
+
