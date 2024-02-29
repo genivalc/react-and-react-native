@@ -1,5 +1,11 @@
 import { SignI } from "./src/screens/Signin";
+import { ThemeProvider } from "styled-components/native";
+import theme from "./src/theme";
 
 export default function App() {
-  return <SignI />;
+  return (
+    <ThemeProvider theme={theme}>
+      <SignI />
+    </ThemeProvider>
+  );
 }
