@@ -13,14 +13,12 @@ GoogleSignin.configure({
   iosClientId: IOS_CLIENT_ID,
 });
 
-export function SignI() {
+export function SignIn() {
   const [isAutenticating, setIsAuthenticanting] = useState(false);
   async function handleGoogleSignIn() {
     try {
       setIsAuthenticanting(true);
-
       const { idToken } = await GoogleSignin.signIn();
-
       if (idToken) {
       } else {
         Alert.alert(
