@@ -6,6 +6,7 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { WEB_CLIENT_ID, IOS_CLIENT_ID } from "@env";
 import { Alert } from "react-native";
 import { useState } from "react";
+import { useApp } from "@realm/react";
 
 GoogleSignin.configure({
   scopes: ["email", "profile"],
@@ -15,11 +16,15 @@ GoogleSignin.configure({
 
 export function SignIn() {
   const [isAutenticating, setIsAuthenticanting] = useState(false);
+  const app = useApp();
+
   async function handleGoogleSignIn() {
     try {
       setIsAuthenticanting(true);
       const { idToken } = await GoogleSignin.signIn();
       if (idToken) {
+        const credentials = Realm.Credentials.jwt(idToken);
+        await app.logIn(credentials);
       } else {
         Alert.alert(
           "Entrar",
