@@ -1,20 +1,44 @@
+import { Camera, CameraType } from 'expo-camera';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function App() {
+
+  const [type, setType] = useState(CameraType.back);
+  const [permission, requestPermission] = Camera.useCameraPermissions();
+
+  if (!permission) {
+    return <View></View>
+  } 
+
+  if (!permission?.granted) {
+    return <Text>Acesso negado</Text>
+  } 
+
+
+  function toggleCameraType() {
+    setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaView>
+      <Camera style={styles.camera} type={type}>
+      <TouchableOpacity  onPress={toggleCameraType}>
+            <Text >Flip Camera</Text>
+          </TouchableOpacity>
+      </Camera>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
     justifyContent: 'center',
   },
+  camera: {
+    width: "100%",
+    height: "100%",
+  }
 });
