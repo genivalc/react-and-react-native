@@ -1,4 +1,3 @@
-import React from "react";
 import { Share, Text, TouchableOpacity, View } from "react-native";
 
 import { styles } from "./styles";
