@@ -1,15 +1,15 @@
+import axios from 'axios';
 import { StatusBar } from 'expo-status-bar';
-import { Platform, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Platform, SafeAreaView, StyleSheet } from 'react-native';
 import CurrentPrice from './src/components/CurrentPrice';
 import HistoryGraphic from './src/components/HistoryGraphic';
 import QuotationsList from './src/components/QuotationsList';
-import QuotationsItems from './src/components/QuotationsList/QuotatuinsItems';
-import { useEffect, useState } from 'react';
 
 function addZero(number: number): string {
   if (number < 10) {
       return "0" + number;
-  }
+  } 
   return number.toString();
 }
 
@@ -17,47 +17,50 @@ function createUrl(qtdDays: number): string {
   const data = new Date();
   const listLastDays = qtdDays;
   data.setDate(data.getDate() - listLastDays);
-  const end_date = `${data.getFullYear()}-${addZero(data.getMonth() + 1)}-${addZero(data.getDate())}`;
-  data.setDate(data.getDate() + listLastDays); // Reset date before calculating start_date
   const start_date = `${data.getFullYear()}-${addZero(data.getMonth() + 1)}-${addZero(data.getDate())}`;
+  data.setDate(data.getDate() + listLastDays); // Reset date before calculating start_date
+  const end_date = `${data.getFullYear()}-${addZero(data.getMonth() + 1)}-${addZero(data.getDate())}`;
   return `https://api.coindesk.com/v1/bpi/historical/close.json?start=${start_date}&end=${end_date}`;
 }
 
 async function getListCoins(url:string) {
-let response = await fetch(url)
-let returnApi = await response.json()
-let selectListQuotations = returnApi.bpi
-const queryCoinsList = Object.keys(selectListQuotations).map((key) => {
-  return {
-    data: key.split('-').reverse().join("/"),
-    valor: selectListQuotations[key]
-  }
-})
-let data  = queryCoinsList.reverse()
-return data
+  const selectListQuotations = await axios.get(url).then((response) => {
+    return response.data.bpi
+  });
+
+  const queryCoinsList = Object.keys(selectListQuotations).map((key) => {
+    return {
+      data: key.split('-').reverse().join("/"),
+      valor: selectListQuotations[key]
+    }
+  })
+  return queryCoinsList.reverse()
 }
 
 async function getPriceCoinsGraphic(url:string) {
-let response = await fetch(url)
-let returnApi = await response.json()
-let selectListQuotations = returnApi.bpi
-const queryCoinsList = Object.keys(selectListQuotations).map((key) => {
-    valor: selectListQuotations[key]
-})
-let data  = queryCoinsList
-return data
+  const selectListQuotations = await axios.get(url).then((response) => {
+    return response.data.bpi
+  });
+  const queryCoinsList = Object.keys(selectListQuotations).map((key) => {
+    return [ selectListQuotations[key]]
+  })
+  return queryCoinsList
 }
 
-export default function App() {
-
+export default function App() { 
   const [conisList, setConisList] = useState([])
-  const [conisGraphicList, setConisGraphicList] = useState([0])
+  const [conisGraphicList, setConisGraphicList] = useState([])
   const [days, setDays] = useState(30)
   const [updateData, setUpdateData] = useState(true)
+  const [price, setPrice] = useState()
 
   function updateDays(number: number) {
     setDays(number)
     setUpdateData(true)
+  }
+
+  function priceCotation(){
+    setPrice(conisGraphicList.pop())
   }
 
   useEffect(() => {
@@ -70,6 +73,7 @@ export default function App() {
     if(updateData){
       setUpdateData(false)
     }
+    priceCotation()
 
   }, [updateData])
 
@@ -77,10 +81,10 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" backgroundColor='#861d1d'  />
-      <CurrentPrice/>
-      <HistoryGraphic></HistoryGraphic>
-      <QuotationsList/>
-      <QuotationsItems/>
+      <CurrentPrice lastContation={price}/>
+      <HistoryGraphic infoDataGraphic={conisGraphicList}></HistoryGraphic>
+      <QuotationsList filterDay={updateDays} listTransactions={conisList}/>
+      
     </SafeAreaView>
   );
 }
