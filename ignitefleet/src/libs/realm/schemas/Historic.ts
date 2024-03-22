@@ -35,7 +35,7 @@ export class Historic extends Realm.Object<Historic> {
       _id: "uuid",
       user_id: {
         type: "string",
-        indexed: true, //pesquisa
+        indexed: true,
       },
       license_plate: "string",
       description: "string",
